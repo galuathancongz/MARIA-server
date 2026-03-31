@@ -16,9 +16,11 @@ app.use(express.static(path.join(__dirname, 'public')));
 // API Routes
 const authRoutes = require('./routes/auth');
 const gamedataRoutes = require('./routes/gamedata');
+const exportRoutes = require('./routes/export');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/gamedata', gamedataRoutes);
+app.use('/api/export', exportRoutes);
 
 // Health check
 app.get('/api/health', (req, res) => {
