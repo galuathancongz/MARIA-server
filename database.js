@@ -52,4 +52,18 @@ try {
   // Column already exists — ignore
 }
 
+// Migrate: add level4_json column if not exists (quiz answers)
+try {
+  db.exec(`ALTER TABLE game_data ADD COLUMN level4_json TEXT DEFAULT '{}'`);
+} catch (e) {
+  // Column already exists — ignore
+}
+
+// Migrate: add analytics_json column if not exists (derived metrics)
+try {
+  db.exec(`ALTER TABLE game_data ADD COLUMN analytics_json TEXT DEFAULT '{}'`);
+} catch (e) {
+  // Column already exists — ignore
+}
+
 module.exports = db;
