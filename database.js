@@ -66,4 +66,11 @@ try {
   // Column already exists — ignore
 }
 
+// Migrate: add persona_json column if not exists (Level 1 persona + reflections)
+try {
+  db.exec(`ALTER TABLE game_data ADD COLUMN persona_json TEXT DEFAULT '{}'`);
+} catch (e) {
+  // Column already exists — ignore
+}
+
 module.exports = db;
