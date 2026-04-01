@@ -17,9 +17,6 @@ router.post('/save', (req, res) => {
       age,
       subject,
       subjectName,
-      resourcesJson,
-      heartJson,
-      packJson,
       level2Json,
       level3Json,
       settingsJson,
@@ -30,18 +27,15 @@ router.post('/save', (req, res) => {
 
     const stmt = db.prepare(`
       INSERT INTO game_data (user_id, level, name_player, age, subject, subject_name,
-        resources_json, heart_json, pack_json, level2_json, level3_json, settings_json,
+        level2_json, level3_json, settings_json,
         skills_json, level4_json, analytics_json, updated_at)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, datetime('now'))
       ON CONFLICT(user_id) DO UPDATE SET
         level = excluded.level,
         name_player = excluded.name_player,
         age = excluded.age,
         subject = excluded.subject,
         subject_name = excluded.subject_name,
-        resources_json = excluded.resources_json,
-        heart_json = excluded.heart_json,
-        pack_json = excluded.pack_json,
         level2_json = excluded.level2_json,
         level3_json = excluded.level3_json,
         settings_json = excluded.settings_json,
@@ -58,9 +52,6 @@ router.post('/save', (req, res) => {
       age ?? 24,
       subject ?? 0,
       subjectName ?? '',
-      resourcesJson ?? '{"resources":[]}',
-      heartJson ?? '{}',
-      packJson ?? '{}',
       level2Json ?? '{}',
       level3Json ?? '{}',
       settingsJson ?? '{}',
@@ -110,9 +101,6 @@ function formatGameData(row) {
     age: row.age,
     subject: row.subject,
     subjectName: row.subject_name,
-    resourcesJson: row.resources_json,
-    heartJson: row.heart_json,
-    packJson: row.pack_json,
     level2Json: row.level2_json,
     level3Json: row.level3_json,
     settingsJson: row.settings_json,
