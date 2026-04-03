@@ -23,7 +23,9 @@ router.post('/save', (req, res) => {
       settingsJson,
       skillsJson,
       level4Json,
-      analyticsJson
+      analyticsJson,
+      sessionId,
+      saveTrigger
     } = req.body;
 
     const stmt = db.prepare(`
@@ -62,6 +64,24 @@ router.post('/save', (req, res) => {
       level4Json ?? '{}',
       analyticsJson ?? '{}'
     );
+
+    // Append snapshot for history tracking
+    db.appendSnapshot(userId, {
+      sessionId: sessionId || null,
+      saveTrigger: saveTrigger || 'unknown',
+      level: level ?? 0,
+      namePlayer: namePlayer ?? 'username',
+      age: age ?? 24,
+      subject: subject ?? 0,
+      subjectName: subjectName ?? '',
+      personaJson: personaJson ?? '{}',
+      level2Json: level2Json ?? '{}',
+      level3Json: level3Json ?? '{}',
+      level4Json: level4Json ?? '{}',
+      skillsJson: skillsJson ?? '{"unlocked":[]}',
+      settingsJson: settingsJson ?? '{}',
+      analyticsJson: analyticsJson ?? '{}'
+    });
 
     res.json({ success: true, message: 'Game data saved' });
   } catch (err) {

@@ -53,11 +53,15 @@ router.post('/register', (req, res) => {
     // Update last_login
     db.prepare(`UPDATE users SET last_login = datetime('now') WHERE id = ?`).run(userId);
 
+    // Create play session
+    const sessionId = db.createSession(Number(userId));
+
     res.json({
       success: true,
       token,
       userId: Number(userId),
-      username
+      username,
+      sessionId
     });
   } catch (err) {
     console.error('[register] ERROR:', err.constructor.name, '-', err.message);
@@ -92,11 +96,15 @@ router.post('/login', (req, res) => {
     // Update last_login
     db.prepare(`UPDATE users SET last_login = datetime('now') WHERE id = ?`).run(user.id);
 
+    // Create play session
+    const sessionId = db.createSession(user.id);
+
     res.json({
       success: true,
       token,
       userId: user.id,
-      username: user.username
+      username: user.username,
+      sessionId
     });
   } catch (err) {
     console.error('Login error:', err);
@@ -104,8 +112,12 @@ router.post('/login', (req, res) => {
   }
 });
 
-// POST /api/auth/logout (just validates token, client discards it)
+// POST /api/auth/logout
 router.post('/logout', authenticateToken, (req, res) => {
+  const { sessionId } = req.body || {};
+  if (sessionId) {
+    db.endSession(req.userId, sessionId, 'logout');
+  }
   res.json({ success: true, message: 'Logged out' });
 });
 
